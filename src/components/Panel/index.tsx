@@ -12,17 +12,19 @@ const Panel = ({ title, children, className = '' }: PanelProps) => {
     <div className={`tech-panel ${className}`}>
       {title && (
         <div className="panel-title">
-          <span className="title-text">{title}</span>
+          <div className="title-container">
+            <span className="title-text">{title}</span>
+          </div>
           <div className="title-decoration"></div>
         </div>
       )}
       <div className="panel-content">
         {children}
       </div>
-      <div className="panel-corner corner-tl"></div>
+      {/* <div className="panel-corner corner-tl"></div>
       <div className="panel-corner corner-tr"></div>
       <div className="panel-corner corner-bl"></div>
-      <div className="panel-corner corner-br"></div>
+      <div className="panel-corner corner-br"></div> */}
     </div>
   );
 };

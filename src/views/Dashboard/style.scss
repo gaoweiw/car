@@ -655,7 +655,7 @@
           height: 100%; // Ensure it fills the grid cell
 
           &:hover {
-            background: rgba(0, 246, 255, 0.4);
+            background: rgba(0, 246, 255, 0.2);
             transform: scale(1.05);
             z-index: 2;
           }
