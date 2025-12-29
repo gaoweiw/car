@@ -186,7 +186,7 @@ const Dashboard = () => {
       <div className="dashboard-content">
         {/* Left Column */}
         <div className="column left-col">
-          <Panel className="panel-h-sm panel-1" title="无人机任务统计">
+          <Panel className="panel-h-sm" title="无人机任务统计">
             <div className="task-stats">
               <div className="chart-ring">
                 <img src={getAssetUrl("drone.png")} alt="drone" className="drone-img" />
