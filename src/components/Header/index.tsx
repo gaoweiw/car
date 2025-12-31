@@ -24,7 +24,7 @@ const Header = () => {
   };
 
   return (
-    <div className="dashboard-header" style={{backgroundImage: `url(${getAssetUrl('img (1).png')})`}}>
+    <div className="dashboard-header" style={{backgroundImage: `url(${getAssetUrl('header_bg.png')})`}}>
       <div className="header-weather">
         <span className="weather-icon">☀</span>
         <span className="weather-temp">{weather.temp}°C</span>

@@ -5,6 +5,12 @@ export interface DroneStats {
   uncompleted: number;
 }
 
+export interface DogStats {
+  total: number;
+  completed: number;
+  uncompleted: number;
+}
+
 export interface PatrolStats {
   total: number;
   fire: number;
@@ -34,6 +40,7 @@ export interface Zone {
 
 export interface DashboardData {
   droneStats: DroneStats;
+  dogStats: DogStats;
   patrolStats: PatrolStats;
   metrics: Metrics;
   zones: Zone[];

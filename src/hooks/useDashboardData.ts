@@ -9,20 +9,25 @@ const fetchDashboardData = async (): Promise<DashboardData> => {
   // In a real app, this would be an axios.get('/api/dashboard') call
   return {
     droneStats: {
-      completionRate: 60 + Math.floor(Math.random() * 10),
+      completionRate: 87,
       total: 500,
-      completed: 300 + Math.floor(Math.random() * 50),
-      uncompleted: 200 - Math.floor(Math.random() * 50)
+      completed: 435,
+      uncompleted: 65
+    },
+    dogStats: {
+      total: 500,
+      completed: 312,
+      uncompleted: 188
     },
     patrolStats: {
-      total: 200 + Math.floor(Math.random() * 5),
+      total: 200,
       fire: 5,
       loading: 4,
       spacing: 2
     },
     metrics: {
-      accuracy: +(98.5 + (Math.random() * 0.2 - 0.1)).toFixed(1),
-      falseAlarm: +(2.23 + (Math.random() * 0.2 - 0.1)).toFixed(2)
+      accuracy: 98.5,
+      falseAlarm: 2.23
     },
     zones: ['A区', 'B区', 'C区'].map((zoneName, zoneIndex) => {
       // Distribute 500 cars across 3 zones
@@ -32,15 +37,33 @@ const fetchDashboardData = async (): Promise<DashboardData> => {
       return {
         name: zoneName,
         cars: Array.from({ length: carsInZone }).map((_, i) => {
-          // Simulate random abnormal cars
-          const isAbnormal = Math.random() > 0.98; // ~2% abnormal
+          // Fixed abnormal cars instead of random
+          let isAbnormal = false;
+          let abnormalReason: string | undefined = undefined;
+
+          // Define specific abnormal cars for each zone
+          if (zoneIndex === 0) { // A区
+             if (i === 119) { isAbnormal = true; abnormalReason = '车门未关闭'; }
+            //  if (i === 45) { isAbnormal = true; abnormalReason = '车胎漏气'; }
+            //  if (i === 103) { isAbnormal = true; abnormalReason = '货物倾斜'; }
+            //  if (i === 156) { isAbnormal = true; abnormalReason = '停车越线'; }
+          } else if (zoneIndex === 1) { // B区
+             if (i === 13) { isAbnormal = true; abnormalReason = '车门未关闭'; }
+             if (i === 88) { isAbnormal = true; abnormalReason = '引擎未熄火'; }
+             if (i === 130) { isAbnormal = true; abnormalReason = '天窗未关'; }
+          } else if (zoneIndex === 2) { // C区
+            //  if (i === 8) { isAbnormal = true; abnormalReason = '非法入侵'; }
+            //  if (i === 66) { isAbnormal = true; abnormalReason = '设备离线'; }
+            //  if (i === 142) { isAbnormal = true; abnormalReason = '油箱盖未关'; }
+          }
+          
           const row = Math.floor(i / 6) + 1; // 6 cars per row
           const col = i % 6 + 1;
           
-          // Randomly assign 1-3 cargo boxes
-          const cargoCount = Math.floor(Math.random() * 3) + 1;
-          const cargo = Array.from({ length: cargoCount }).map(() => {
-            const boxNum = Math.floor(Math.random() * 9) + 1;
+          // Deterministic cargo based on index (not random)
+          const cargoCount = (i % 3) + 1;
+          const cargo = Array.from({ length: cargoCount }).map((_, cIdx) => {
+            const boxNum = ((i + cIdx) % 9) + 1;
             return `box${boxNum}.png`;
           });
   
@@ -50,7 +73,7 @@ const fetchDashboardData = async (): Promise<DashboardData> => {
             row,
             col,
             status: isAbnormal ? 'abnormal' : 'normal',
-            abnormalReason: isAbnormal ? '车门未关闭' : undefined,
+            abnormalReason,
             cargo
           };
         })
@@ -63,6 +86,11 @@ const useDashboardData = () => {
   const [data, setData] = useState<DashboardData>({
     droneStats: {
       completionRate: 60,
+      total: 500,
+      completed: 300,
+      uncompleted: 200
+    },
+    dogStats: {
       total: 500,
       completed: 300,
       uncompleted: 200

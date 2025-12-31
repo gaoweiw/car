@@ -1,7 +1,7 @@
 .dashboard-header {
   height: 80px;
   width: 100%;
-  background: url('../../assets/images/img (1).png') no-repeat center top; // Moved to inline style in component
+  background: url('../../assets/images/header_bg.png') ; // Moved to inline style in component
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
@@ -30,7 +30,7 @@
   .header-weather {
     position: absolute;
     left: 30px;
-    top: 50%;
+    top: 80%;
     transform: translateY(-50%);
     display: flex;
     align-items: center;
@@ -49,7 +49,7 @@
   .header-time {
     position: absolute;
     right: 30px;
-    top: 50%;
+    top: 80%;
     transform: translateY(-50%);
     font-family: 'Courier New', monospace;
     font-size: 18px;

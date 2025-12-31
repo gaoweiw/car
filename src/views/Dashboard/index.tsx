@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import ReactECharts from 'echarts-for-react';
-import * as echarts from 'echarts';
+// import ReactECharts from 'echarts-for-react';
+// import * as echarts from 'echarts';
 import Header from '../../components/Header';
 import Panel from '../../components/Panel';
 import Toast from '../../components/Toast';
@@ -8,6 +8,7 @@ import type { ToastRef } from '../../components/Toast';
 import useDashboardData from '../../hooks/useDashboardData';
 import { getAssetUrl } from '../../utils/index';
 import type { Car } from '../../types';
+import { Icon } from '@iconify/react';
 import './style.scss';
 
 const Dashboard = () => {
@@ -16,9 +17,18 @@ const Dashboard = () => {
   const toastRef = useRef<ToastRef>(null);
 
   // Use custom hook for data
-  const { droneStats, patrolStats, metrics, zones } = useDashboardData();
+  const { droneStats, dogStats, patrolStats, metrics, zones } = useDashboardData();
 
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+  const [dismissedAlertIds, setDismissedAlertIds] = useState<Set<string>>(() => new Set());
+
+  const dismissAlert = (carId: string) => {
+    setDismissedAlertIds(prev => {
+      const next = new Set(prev);
+      next.add(carId);
+      return next;
+    });
+  };
 
   useEffect(() => {
     // Boot sequence
@@ -66,55 +76,55 @@ const Dashboard = () => {
     }
   };
 
-  const getBarOption = () => ({
-    grid: { top: 20, bottom: 20, left: 40, right: 20 },
-    tooltip: { trigger: 'axis' },
-    xAxis: {
-      type: 'category',
-      data: ['正常', '异常'],
-      axisLabel: { color: '#fff' },
-      axisLine: { lineStyle: { color: 'rgba(255,255,255,0.2)' } },
-      axisTick: { show: false }
-    },
-    yAxis: {
-      type: 'value',
-      splitLine: { lineStyle: { color: 'rgba(255,255,255,0.1)', type: 'dashed' } },
-      axisLabel: { color: '#aaa' }
-    },
-    series: [
-      {
-        data: [
-          {
-            value: 180,
-            itemStyle: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: '#00ffaa' },
-                { offset: 1, color: 'rgba(0, 255, 170, 0.1)' }
-              ])
-            }
-          },
-          {
-            value: 20,
-            itemStyle: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: '#ff4444' },
-                { offset: 1, color: 'rgba(255, 68, 68, 0.1)' }
-              ])
-            }
-          }
-        ],
-        type: 'bar',
-        barWidth: '30%',
-        showBackground: true,
-        backgroundStyle: {
-          color: 'rgba(255, 255, 255, 0.05)'
-        },
-        itemStyle: {
-          borderRadius: [5, 5, 0, 0]
-        }
-      }
-    ]
-  });
+  // const getBarOption = () => ({
+  //   grid: { top: 20, bottom: 20, left: 40, right: 20 },
+  //   tooltip: { trigger: 'axis' },
+  //   xAxis: {
+  //     type: 'category',
+  //     data: ['正常', '异常'],
+  //     axisLabel: { color: '#fff' },
+  //     axisLine: { lineStyle: { color: 'rgba(255,255,255,0.2)' } },
+  //     axisTick: { show: false }
+  //   },
+  //   yAxis: {
+  //     type: 'value',
+  //     splitLine: { lineStyle: { color: 'rgba(255,255,255,0.1)', type: 'dashed' } },
+  //     axisLabel: { color: '#aaa' }
+  //   },
+  //   series: [
+  //     {
+  //       data: [
+  //         {
+  //           value: 180,
+  //           itemStyle: {
+  //             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+  //               { offset: 0, color: '#00ffaa' },
+  //               { offset: 1, color: 'rgba(0, 255, 170, 0.1)' }
+  //             ])
+  //           }
+  //         },
+  //         {
+  //           value: 20,
+  //           itemStyle: {
+  //             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+  //               { offset: 0, color: '#ff4444' },
+  //               { offset: 1, color: 'rgba(255, 68, 68, 0.1)' }
+  //             ])
+  //           }
+  //         }
+  //       ],
+  //       type: 'bar',
+  //       barWidth: '30%',
+  //       showBackground: true,
+  //       backgroundStyle: {
+  //         color: 'rgba(255, 255, 255, 0.05)'
+  //       },
+  //       itemStyle: {
+  //         borderRadius: [5, 5, 0, 0]
+  //       }
+  //     }
+  //   ]
+  // });
 
   return (
     <div className={`dashboard-container ${isFullScreen ? 'fullscreen' : ''}`} style={{ backgroundImage: `url("${getAssetUrl('img (29).png')}")` }}>
@@ -153,16 +163,6 @@ const Dashboard = () => {
                 <span className="label">电池电量:</span>
                 <span className="value">87%</span>
               </div>
-              <div className="car-detail-row">
-                <span className="label">装载货物:</span>
-                <span className="value">
-                  <div className="cargo-list">
-                    {selectedCar.cargo.map((box, idx) => (
-                      <img key={idx} src={getAssetUrl(box)} alt="cargo" className="cargo-img" />
-                    ))}
-                  </div>
-                </span>
-              </div>
               {selectedCar.status === 'abnormal' && (
                 <div className="abnormal-info">
                   <div className="warning-title">⚠️ 异常检测</div>
@@ -171,16 +171,16 @@ const Dashboard = () => {
                 </div>
               )}
             </div>
-            <div className="corner-tl"></div>
-            <div className="corner-tr"></div>
-            <div className="corner-bl"></div>
-            <div className="corner-br"></div>
           </div>
         </div>
       )}
 
       <div className="fullscreen-toggle" onClick={toggleFullScreen}>
-        {isFullScreen ? '↙' : '↗'}
+        {isFullScreen ? (
+          <Icon fontSize={32} icon="mdi:fullscreen-exit" />
+        ) : (
+          <Icon fontSize={32} icon="mdi:fullscreen" />
+        )}
       </div>
       <Header />
       <div className="dashboard-content">
@@ -224,32 +224,49 @@ const Dashboard = () => {
             </div>
           </Panel>
           <Panel title="无人机巡航统计" className="panel-h-sm">
-            <div className="patrol-stats">
-              <div className="efficiency">
-                <div className="icon-box">✈</div>
-                <div className="info">
-                  <div className="label">排查总数</div>
-                  <div className="value">{patrolStats.total}</div>
+            <div className="patrol-overview">
+              <div className="patrol-top">
+                <div className="patrol-icon">
+                  <img src={getAssetUrl('drone_icon.png')} alt="drone" />
+                </div>
+
+                <div className="patrol-total">
+                  <div className="patrol-total-label">排查总数</div>
+                  <div className="patrol-total-value">{patrolStats.total}</div>
+                </div>
+
+                <div className="patrol-progress">
+                  <div className="patrol-progress-title">
+                    <span className="t">排查正常数量</span>
+                    <span className="t">排查异常数量</span>
+                  </div>
+                  <div className="patrol-progress-bar">
+                    <div className="fill ok" style={{ width: `${Math.max(0, Math.min(100, ((patrolStats.total - patrolStats.fire - patrolStats.loading - patrolStats.spacing) / patrolStats.total) * 100))}%` }} />
+                    <div className="fill bad" style={{ width: `${Math.max(0, Math.min(100, ((patrolStats.fire + patrolStats.loading + patrolStats.spacing) / patrolStats.total) * 100))}%` }} />
+                    <div className="scan" />
+                  </div>
+                  <div className="patrol-progress-title">
+                    <span className="v green">{patrolStats.total - patrolStats.fire - patrolStats.loading - patrolStats.spacing}</span>
+                    <span className="v red">{patrolStats.fire + patrolStats.loading + patrolStats.spacing}</span>
+                  </div>
                 </div>
               </div>
-              <div className="chart-container" style={{ flex: 1, minHeight: 0 }}>
-                <ReactECharts option={getBarOption()} style={{ height: '100%', width: '100%' }} />
-              </div>
-              <div className="bottom-stats">
-                <div className="stat-box">
-                  <div className="label">消防设施</div>
-                  <div className="value">{patrolStats.fire}</div>
-                  <div className="sub">正常/全部: {patrolStats.fire}/{patrolStats.fire}</div>
+
+              <div className="patrol-cards">
+                <div className="patrol-card">
+                  <div className="patrol-card-title">消防设施</div>
+                  <div className="patrol-card-value">{patrolStats.fire}</div>
+                  <div className="patrol-card-sub">正常/全部：<span className="green">{patrolStats.fire}/{patrolStats.fire}</span></div>
                 </div>
-                <div className="stat-box">
-                  <div className="label">装卸通道</div>
-                  <div className="value">{patrolStats.loading}</div>
-                  <div className="sub">正常/全部: {patrolStats.loading}/{patrolStats.loading}</div>
+                <div className="patrol-card">
+                  <div className="patrol-card-title">装卸通道</div>
+                  <div className="patrol-card-value">{patrolStats.loading}</div>
+                  <div className="patrol-card-sub">正常/全部：<span className="green">{patrolStats.loading}/{patrolStats.loading}</span></div>
                 </div>
-                <div className="stat-box">
-                  <div className="label">车辆间距</div>
-                  <div className="value red">{patrolStats.spacing}</div>
-                  <div className="sub">正常/全部: {patrolStats.spacing}/{patrolStats.spacing}</div>
+                <div className="patrol-card">
+                  <div className="patrol-card-title">车辆间距</div>
+                  <div className="patrol-card-value red">{patrolStats.spacing}</div>
+                  <div className="patrol-card-sub">正常/全部：<span className="green">{patrolStats.spacing}/{patrolStats.spacing}</span></div>
                 </div>
               </div>
             </div>
@@ -273,7 +290,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <Panel title="在途车辆状态总览" className="panel-h-lg">
+          <Panel title="在途车辆状态总览" className="panel-half">
             <div className="car-grid-container">
               {zones.map((zone) => (
                 <div key={zone.name} className="zone-section">
@@ -281,6 +298,8 @@ const Dashboard = () => {
                   <div className="zone-grid">
                     {zone.cars.map((car, i) => {
                       const isAbnormal = car.status === 'abnormal';
+                      const isAlertDismissed = dismissedAlertIds.has(car.id);
+
                       return (
                         <div
                           key={i}
@@ -292,9 +311,19 @@ const Dashboard = () => {
                             className="car-icon-img"
                             alt="car"
                           />
-                          {isAbnormal && (
-                            <div className="alert-popup">
-                              <div className="alert-header">异常警告 <span className="close">×</span></div>
+                          {isAbnormal && !isAlertDismissed && (
+                            <div className="alert-popup" onClick={e => e.stopPropagation()}>
+                              <div className="alert-header">
+                                异常警告
+                                <button
+                                  type="button"
+                                  className="alert-close"
+                                  onClick={() => dismissAlert(car.id)}
+                                  aria-label="关闭"
+                                >
+                                  ×
+                                </button>
+                              </div>
                               <div className="alert-content">
                                 <div>车辆: {car.id}</div>
                                 <div>位置: {car.zone}-行{car.row}-列{car.col}</div>
@@ -316,11 +345,11 @@ const Dashboard = () => {
               <div className="device-status-list">
                 {[1, 2, 3].map(i => (
                   <div key={i} className="device-item">
-                    <img src={getAssetUrl('drone.png')} className="device-icon-img" alt="drone" />
                     <div className="device-name">#{i}</div>
                     <div className={`device-state ${i === 3 ? 'charging' : 'patrolling'}`}>
                       {i === 3 ? '充电中' : '巡检中'}
                     </div>
+                    <img src={i===3 ? getAssetUrl('drone_charging.png') : getAssetUrl('drone_patrolling.png')} className="device-icon-img" alt="drone" />
                   </div>
                 ))}
               </div>
@@ -329,20 +358,27 @@ const Dashboard = () => {
               <div className="device-status-list">
                 {[1, 2, 3].map(i => (
                   <div key={i} className="device-item">
-                    <img src={getAssetUrl('dog.png')} className="device-icon-img" alt="robot dog" />
                     <div className="device-name">#{i}</div>
                     <div className={`device-state ${i === 3 ? 'charging' : 'patrolling'}`}>
                       {i === 3 ? '充电中' : '巡检中'}
                     </div>
+                    <img src={i===3 ? getAssetUrl('dog_charging.png') : getAssetUrl('dog_patrolling.png')} className="device-icon-img" alt="robot dog" />
                   </div>
                 ))}
               </div>
             </Panel>
           </div>
 
-          <div className="action-buttons">
-            <button className="action-btn primary" onClick={handleGenerateReport}>生成在途报告</button>
-            <button className="action-btn warning" onClick={handleExceptionAction}>异常处置建议 <span className="badge">3</span></button>
+          {/* Footer action area */}
+          <div className="dashboard-footer">
+            <div className="action-buttons">
+              <button className="action-btn primary" onClick={handleGenerateReport}>
+                生成在途报告
+              </button>
+              <button className="action-btn warning" onClick={handleExceptionAction}>
+                异常处置建议 <div className="badge">3</div>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -350,22 +386,21 @@ const Dashboard = () => {
         <div className="column right-col">
           <Panel title="机器狗巡检任务" className="panel-h-sm">
             <div className="task-stats">
-              <div className="dog-model">
-                {/* Using an image asset as placeholder for the robot dog */}
-                <div className="model-display" style={{ backgroundImage: `url('${getAssetUrl('img (8).png')}')` }}></div>
+              <div className="chart-ring">
+                <img src={getAssetUrl("dog.png")} alt="robot dog" className="dog-img" />
               </div>
-              <div className="stats-list right-align">
+              <div className="stats-list">
                 <div className="stat-item">
-                  <span className="label">今日任务数(个)</span>
-                  <span className="value">500</span>
+                  <span className="label">任务总数(个)</span>
+                  <span className="value">{dogStats.total}</span>
                 </div>
                 <div className="stat-item">
                   <span className="label">已完成任务数(个)</span>
-                  <span className="value green">300</span>
+                  <span className="value green">{dogStats.completed}</span>
                 </div>
                 <div className="stat-item">
                   <span className="label">未完成任务数(个)</span>
-                  <span className="value orange">200</span>
+                  <span className="value orange">{dogStats.uncompleted}</span>
                 </div>
               </div>
             </div>
@@ -388,18 +423,18 @@ const Dashboard = () => {
           </Panel>
           <Panel title="区域巡检统计" className="panel-h-sm">
             <div className="area-stats">
-              <div className="area-row abnormal">
-                <div className="area-name">A区</div>
-                <div className="area-info">
-                  <div className="status-text">4处异常</div>
-                  <div className="detail-text">车门未关、车胎漏气 等其他问题</div>
-                </div>
-              </div>
               <div className="area-row normal">
-                <div className="area-name">B区</div>
+                <div className="area-name">A区</div>
                 <div className="area-info">
                   <div className="status-text">正常</div>
                   <div className="detail-text">检查中</div>
+                </div>
+              </div>
+              <div className="area-row abnormal">
+                <div className="area-name">B区</div>
+                <div className="area-info">
+                  <div className="status-text">4处异常</div>
+                  <div className="detail-text">车门未关、车胎漏气 等其他问题</div>
                 </div>
               </div>
               <div className="area-row normal">
