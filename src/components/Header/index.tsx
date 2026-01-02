@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react';
 import { getAssetUrl } from '../../utils/index';
 import './style.scss';
 
-const Header = () => {
+interface HeaderProps {
+  title?: string;
+  bgImage?: string;
+}
+
+const Header = ({ title = '渝车出海 · 在途管理驾驶舱', bgImage }: HeaderProps) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [weather] = useState({ temp: 24, type: '晴', wind: '东南风 3级' });
 
@@ -20,11 +25,18 @@ const Header = () => {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    const week = weekDays[date.getDay()];
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}  ${week}`;
   };
 
   return (
-    <div className="dashboard-header" style={{backgroundImage: `url(${getAssetUrl('header_bg.png')})`}}>
+    <div 
+      className="dashboard-header" 
+      style={{
+        backgroundImage: `url(${bgImage || getAssetUrl('header_bg.png')})`
+      }}
+    >
       <div className="header-weather">
         <span className="weather-icon">☀</span>
         <span className="weather-temp">{weather.temp}°C</span>
@@ -32,7 +44,7 @@ const Header = () => {
         <span className="weather-wind">{weather.wind}</span>
       </div>
       <div className="header-decoration left"></div>
-      <h1 className="header-title">渝车出海 · 在途管理驾驶舱</h1>
+      <h1 className="header-title">{title}</h1>
       <div className="header-decoration right"></div>
       <div className="header-time">{formatTime(currentTime)}</div>
     </div>

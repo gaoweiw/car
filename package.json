@@ -11,11 +11,14 @@
   },
   "dependencies": {
     "@iconify/react": "^6.0.2",
+    "@types/three": "^0.182.0",
     "echarts": "^6.0.0",
     "echarts-for-react": "^3.0.5",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-router-dom": "^7.11.0",
     "sass": "^1.97.1",
+    "three": "^0.182.0",
     "tslib": "^2.8.1"
   },
   "devDependencies": {

@@ -21,10 +21,10 @@ const Panel = ({ title, children, className = '' }: PanelProps) => {
       <div className="panel-content">
         {children}
       </div>
-      {/* <div className="panel-corner corner-tl"></div>
+      <div className="panel-corner corner-tl"></div>
       <div className="panel-corner corner-tr"></div>
       <div className="panel-corner corner-bl"></div>
-      <div className="panel-corner corner-br"></div> */}
+      <div className="panel-corner corner-br"></div>
     </div>
   );
 };
