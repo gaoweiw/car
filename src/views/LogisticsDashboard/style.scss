@@ -80,6 +80,22 @@
     }
   }
 
+  // Ensure header stays on top of the map layer
+  .dashboard-header {
+    z-index: 10;
+  }
+
+  .map-background-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    
+    // Ensure map captures events
+    pointer-events: auto; 
+  }
+
   .logistics-content {
     position: relative;
     z-index: 2;
@@ -90,6 +106,12 @@
     min-height: 0;
     overflow: hidden;
     padding-bottom: 10px; // Add some padding at bottom
+    pointer-events: none; // Allow clicks to pass through to map
+  }
+
+  // Ensure the center column doesn't block clicks in the empty space
+  .col.center {
+    pointer-events: none;
   }
 
   .col {
@@ -97,8 +119,10 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
+    pointer-events: none; // Ensure column container doesn't block
     
     > * {
+      pointer-events: auto; // Re-enable pointer events for panels/children
       animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
     }
 
@@ -116,6 +140,9 @@
           animation-delay: #{0.2 + $i * 0.1}s;
         }
       }
+      
+      // Push content to top and bottom, leaving middle empty for map visibility
+      justify-content: space-between; 
     }
 
     &.right {
@@ -245,6 +272,12 @@
   .panel-h-lg {
     flex: 1.7;
     min-height: 0;
+  }
+
+  .panel-bottom-fixed {
+    height: 25%;
+    min-height: 200px;
+    flex: none; // Don't flex, stay fixed height at bottom
   }
 
   // optional: slightly smaller title for this screen
@@ -545,62 +578,20 @@
     background: url('../../assets/images/logistics/money_bg.png') no-repeat center center / contain; 
   }
 
+  .center-bottom-group {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    pointer-events: none; // Container doesn't block
+    
+    > * {
+      pointer-events: auto; // Children are interactive
+    }
+  }
 
   // Map
   .map-panel {
-    position: relative;
-    flex: 1;
-    min-height: 0;
-    border: 1px solid rgba(0, 246, 255, 0.18);
-    background: rgba(0, 0, 0, 0.22);
-    overflow: hidden;
-    margin: -12px;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: -30% -20% -20% -20%;
-      background: radial-gradient(circle at 50% 50%, rgba(0, 246, 255, 0.15), rgba(0, 0, 0, 0) 58%);
-      filter: blur(2px);
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, transparent 40%, rgba(0, 246, 255, 0.14), transparent 60%);
-      transform: translateX(-80%);
-      animation: map-scan 4.2s linear infinite;
-      pointer-events: none;
-      z-index: 3;
-      opacity: 0.65;
-    }
-
-    .three-canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      position: relative;
-      z-index: 1;
-    }
-
-    // ECharts 地图容器
-    .map-echarts {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      height: 100%;
-    }
-
-    .map-overlay {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at center, rgba(0, 246, 255, 0.08), rgba(0, 0, 0, 0) 60%);
-      pointer-events: none;
-      z-index: 4;
-    }
+    display: none; // Hide old map panel
   }
 
   @keyframes map-scan {

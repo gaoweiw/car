@@ -87,7 +87,7 @@ const LogisticsDashboard = () => {
     const register = async () => {
       try {
         // 运行期从 CDN 拉取 world GeoJSON（如果你希望离线/内网部署，可改为本地 assets json）
-        const res = await fetch(getJsonUrl('world.json'));
+        const res = await fetch(getJsonUrl('world_chinese.json'));
         if (!res.ok) return;
         const geoJson = await res.json();
         if (cancelled) return;
@@ -107,6 +107,17 @@ const LogisticsDashboard = () => {
 
   const mapCenter = useMemo(() => [70, 30] as [number, number], []);
 
+  const routes = useMemo(() => [
+    { from: '重庆', to: '莫斯科', value: 80 },
+    { from: '重庆', to: '曼谷', value: 55 },
+    { from: '重庆', to: '河内', value: 42 },
+    { from: '重庆', to: '万象', value: 38 },
+    { from: '重庆', to: '新加坡', value: 45 },
+    { from: '重庆', to: '澳大利亚', value: 60 },
+    { from: '重庆', to: '伦敦', value: 75 },
+    { from: '重庆', to: '洛杉矶', value: 70 },
+  ], []);
+
   const mapOption = useMemo(() => {
     const hub: [number, number] = [106.55, 29.56]; // 重庆
 
@@ -123,14 +134,11 @@ const LogisticsDashboard = () => {
       曼谷: [100.5018, 13.7563],
       河内: [105.8342, 21.0278],
       万象: [102.6331, 17.9757],
+      新加坡: [103.8198, 1.3521],
+      澳大利亚: [151.2093, -33.8688],
+      伦敦: [-0.1276, 51.5074],
+      洛杉矶: [-118.2437, 34.0522],
     };
-
-    const routes = [
-      { from: '重庆', to: '莫斯科', value: 80 },
-      { from: '重庆', to: '曼谷', value: 55 },
-      { from: '重庆', to: '河内', value: 42 },
-      { from: '重庆', to: '万象', value: 38 },
-    ];
 
     const lineData: LineDatum[] = routes
       .map((r): LineDatum | null => {
@@ -166,14 +174,19 @@ const LogisticsDashboard = () => {
         zoom: 1.1,
         scaleLimit: { min: 1, max: 6 },
         itemStyle: {
-          areaColor: 'rgba(7, 28, 52, 0.65)',
-          borderColor: 'rgba(0, 246, 255, 0.25)',
-          borderWidth: 0.8,
+          areaColor: 'rgba(13, 34, 59, 0.8)',
+          borderColor: '#7ffaff',
+          borderWidth: 0.5,
+          shadowColor: 'rgba(0, 180, 255, 0.5)',
+          shadowBlur: 10,
         },
         emphasis: {
           itemStyle: {
-            areaColor: 'rgba(0, 246, 255, 0.10)',
-            borderColor: 'rgba(0, 246, 255, 0.55)',
+            areaColor: 'rgba(0, 180, 255, 0.3)',
+            borderColor: '#fff',
+            borderWidth: 1,
+            shadowColor: 'rgba(0, 200, 255, 1)',
+            shadowBlur: 20,
           },
           label: { show: false },
         },
@@ -187,19 +200,19 @@ const LogisticsDashboard = () => {
           zlevel: 2,
           effect: {
             show: true,
-            period: 5,
-            trailLength: 0.2,
+            period: 4,
+            trailLength: 0.1,
             symbol: 'arrow',
-            symbolSize: 7,
-            color: '#ffd36a',
+            symbolSize: 6,
+            color: '#ffc400',
           },
           lineStyle: {
-            color: 'rgba(255, 211, 106, 0.85)',
-            width: 2,
-            opacity: 0.55,
-            curveness: 0.25,
+            color: '#ffc400',
+            width: 1,
+            opacity: 0.6,
+            curveness: 0.3,
             shadowBlur: 10,
-            shadowColor: 'rgba(255, 211, 106, 0.35)',
+            shadowColor: 'rgba(255, 196, 0, 0.5)',
           },
           data: lineData,
         },
@@ -210,29 +223,33 @@ const LogisticsDashboard = () => {
           zlevel: 3,
           rippleEffect: {
             brushType: 'stroke',
-            scale: 3.5,
+            scale: 3,
+            color: '#ffc400',
           },
           itemStyle: {
-            color: '#00f6ff',
-            shadowBlur: 14,
-            shadowColor: 'rgba(0, 246, 255, 0.5)',
+            color: '#ffc400',
+            shadowBlur: 10,
+            shadowColor: 'rgba(255, 196, 0, 0.5)',
           },
           symbolSize: (val: unknown) => {
             const v = val as [number, number, number] | undefined;
-            return (v?.[2] ?? 0) > 100 ? 12 : 8;
+            return (v?.[2] ?? 0) > 100 ? 14 : 8;
           },
           label: {
             show: true,
             formatter: '{b}',
-            color: 'rgba(188, 224, 255, 0.9)',
-            fontSize: 11,
+            color: '#fff',
+            fontSize: 12,
             position: 'right',
+            fontWeight: 'bold',
+            textBorderColor: 'rgba(0,0,0,0.8)',
+            textBorderWidth: 2,
           },
           data: scatterData,
         },
       ],
     } as echarts.EChartsOption;
-  }, [mapCenter]);
+  }, [mapCenter, routes]);
 
   const orders = useMemo<OrderRow[]>(
     () => [
@@ -261,7 +278,10 @@ const LogisticsDashboard = () => {
     [],
   );
 
-  const donutOption = useMemo(() => ({
+  const donutOption = useMemo(() => {
+    const colors = ['#00f6ff', '#026bff', '#ffd36a', '#00ffaa', '#ff6b6b', '#a06bff', '#ff9f43', '#54a0ff'];
+    
+    return {
     backgroundColor: 'transparent',
     tooltip: {
       trigger: 'item',
@@ -293,15 +313,14 @@ const LogisticsDashboard = () => {
           borderWidth: 2,
         },
         label: { show: false },
-        data: [
-          { value: 35, name: '俄罗斯', itemStyle: { color: '#00f6ff' } },
-          { value: 25, name: '老挝', itemStyle: { color: '#026bff' } },
-          { value: 25, name: '泰国', itemStyle: { color: '#ffd36a' } },
-          { value: 15, name: '越南', itemStyle: { color: '#00ffaa' } },
-        ],
+        data: routes.map((r, idx) => ({
+          value: r.value,
+          name: r.to,
+          itemStyle: { color: colors[idx % colors.length] }
+        })),
       },
     ],
-  } as echarts.EChartsOption), []);
+  } as echarts.EChartsOption}, [routes]);
 
   const lineOption = useMemo(() => ({
     backgroundColor: 'transparent',
@@ -430,7 +449,12 @@ const LogisticsDashboard = () => {
   return (
     <div
       className={`logistics-dashboard ${isFullScreen ? 'fullscreen' : ''}`}
-      style={{ backgroundImage: `url("${getAssetUrl('logistics/map.png')}")`, backgroundPosition: 'center 26px', backgroundSize: '90%', backgroundRepeat: 'no-repeat' }}
+      style={{
+        backgroundImage: `url("${getAssetUrl('logistics/map.png')}")`,
+        backgroundPosition: 'center 26px',
+        backgroundSize: '90%',
+        backgroundRepeat: 'no-repeat',
+      }}
     >
       <div className="fullscreen-toggle" onClick={toggleFullScreen} title="全屏">
         {isFullScreen ? (
@@ -442,6 +466,10 @@ const LogisticsDashboard = () => {
 
       <div className="back-toggle" onClick={() => navigate('/')} title="切换">
         <Icon fontSize={32} icon="material-symbols:switch-right" />
+      </div>
+
+      <div className="map-background-layer">
+        {isMapLoaded && <ReactECharts echarts={echarts} option={mapOption} style={{ height: '80%', width: '80%', margin: '0 auto' }} />}
       </div>
 
       <Header
@@ -542,23 +570,19 @@ const LogisticsDashboard = () => {
             </div>
           </div>
 
-          <div className="map-panel">
-            <div className="chart-container map-echarts">
-              {isMapLoaded && <ReactECharts echarts={echarts} option={mapOption} style={{ height: '100%', width: '100%' }} />}
-            </div>
-            <div className="map-overlay" aria-hidden="true" />
-          </div>
-          <Panel title="运输结构分析" className="panel-h-sm logistics-title">
-            <div className="chart-container">
-              <ReactECharts option={lineOption} style={{ height: '100%', width: '100%' }} />
-            </div>
-          </Panel>
+          <div className="center-bottom-group">
+            <Panel title="运输结构分析" className="panel-bottom-fixed logistics-title">
+              <div className="chart-container">
+                <ReactECharts option={lineOption} style={{ height: '100%', width: '100%' }} />
+              </div>
+            </Panel>
 
-          <div className="bottom-actions">
-            <button className="big-btn">应急预案参考</button>
-            <button className="big-btn active">
-              运营数据分析 <span className="badge">3</span>
-            </button>
+            <div className="bottom-actions">
+              <button className="big-btn">应急预案参考</button>
+              <button className="big-btn active">
+                运营数据分析 <span className="badge">3</span>
+              </button>
+            </div>
           </div>
         </div>
         <div className="col right">
