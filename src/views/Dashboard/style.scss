@@ -202,6 +202,30 @@
     }
   }
 
+  .back-toggle {
+    position: absolute;
+    top: 18px;
+    right: 60px; // Position to the left of fullscreen toggle
+    z-index: 20;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    opacity: 0.5;
+    color: #00f6ff;
+    font-size: 20px;
+    transition: opacity 0.3s;
+
+    &:hover {
+      opacity: 1;
+      box-shadow: 0 0 12px rgba(0, 246, 255, 0.25);
+    }
+  }
+
   .dashboard-content {
     flex: 1;
     display: flex;
@@ -746,7 +770,7 @@
 
       .patrol-card-sub {
         font-size: 11px;
-        color: rgba(255, 255, 255, 0.65);
+        color: rgba(255, 255, 255, 1);
 
         .green {
           color: #00ffaa;
@@ -790,7 +814,7 @@
 
         .detail-text {
           font-size: 10px;
-          color: #aaa;
+          color: #fff;
           line-height: 1.2;
         }
       }
@@ -1266,7 +1290,7 @@
 
         .detail-text {
           font-size: 10px;
-          color: #aaa;
+          color: #fff;
           line-height: 1.2;
         }
       }

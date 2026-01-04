@@ -1,0 +1,155 @@
+{
+  "type": "FeatureCollection",
+  "name": "world-simplified",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:EPSG::3857"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "CHN",
+      "properties": {
+        "name": "China",
+        "name_zh": "中国",
+        "continent": "Asia"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [[[[73.675, 35.495], [78.456, 37.123], [81.234, 35.678], [79.123, 32.456], [76.789, 31.234], [73.675, 35.495]]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GBR",
+      "properties": {
+        "name": "United Kingdom",
+        "name_zh": "英国",
+        "continent": "Europe"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [[[[-5.0, 50.0], [1.0, 50.0], [1.0, 55.0], [-5.0, 55.0], [-5.0, 50.0]]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "DEU",
+      "properties": {
+        "name": "Germany",
+        "name_zh": "德国",
+        "continent": "Europe"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [[[[5.0, 47.0], [15.0, 47.0], [15.0, 55.0], [5.0, 55.0], [5.0, 47.0]]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FRA",
+      "properties": {
+        "name": "France",
+        "name_zh": "法国",
+        "continent": "Europe"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [[[[-5.0, 42.0], [8.0, 42.0], [8.0, 51.0], [-5.0, 51.0], [-5.0, 42.0]]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "USA",
+      "properties": {
+        "name": "United States",
+        "name_zh": "美国",
+        "continent": "North America"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [[[[-125.0, 25.0], [-66.0, 25.0], [-66.0, 49.0], [-125.0, 49.0], [-125.0, 25.0]]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "JPN",
+      "properties": {
+        "name": "Japan",
+        "name_zh": "日本",
+        "continent": "Asia"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [[[[128.0, 30.0], [146.0, 30.0], [146.0, 45.0], [128.0, 45.0], [128.0, 30.0]]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "KOR",
+      "properties": {
+        "name": "South Korea",
+        "name_zh": "韩国",
+        "continent": "Asia"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[124.0, 33.0], [131.0, 33.0], [131.0, 38.0], [124.0, 38.0], [124.0, 33.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "AUS",
+      "properties": {
+        "name": "Australia",
+        "name_zh": "澳大利亚",
+        "continent": "Oceania"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [[[[113.0, -44.0], [154.0, -44.0], [154.0, -10.0], [113.0, -10.0], [113.0, -44.0]]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "RUS",
+      "properties": {
+        "name": "Russia",
+        "name_zh": "俄罗斯",
+        "continent": "Europe/Asia"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [[[[20.0, 41.0], [190.0, 41.0], [190.0, 82.0], [20.0, 82.0], [20.0, 41.0]]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BRA",
+      "properties": {
+        "name": "Brazil",
+        "name_zh": "巴西",
+        "continent": "South America"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [[[[-73.0, -33.0], [-34.0, -33.0], [-34.0, 5.0], [-73.0, 5.0], [-73.0, -33.0]]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "IND",
+      "properties": {
+        "name": "India",
+        "name_zh": "印度",
+        "continent": "Asia"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[68.0, 8.0], [97.0, 8.0], [97.0, 35.0], [68.0, 35.0], [68.0, 8.0]]]
+      }
+    }
+  ]
+}

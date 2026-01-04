@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import * as echarts from 'echarts';
 import Header from '../../components/Header';
-import Panel from '../../components/Panel'; 
+import Panel from '../../components/Panel';
 import { getAssetUrl } from '../../utils';
 import './style.scss';
 import { Icon } from '@iconify/react';
@@ -26,6 +26,54 @@ const LogisticsDashboard = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [isHoveringTable, setIsHoveringTable] = useState(false);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
+  const [donutChartInstance, setDonutChartInstance] = useState<echarts.ECharts | null>(null);
+
+  // 模拟鼠标依次滑过饼图各部分
+  useEffect(() => {
+    if (!donutChartInstance) return;
+
+    let currentIndex = -1;
+    const dataLen = 4; // 饼图数据长度
+
+    const interval = setInterval(() => {
+      // 取消之前的高亮
+      donutChartInstance.dispatchAction({
+        type: 'downplay',
+        seriesIndex: 0,
+        dataIndex: currentIndex
+      });
+
+      currentIndex = (currentIndex + 1) % dataLen;
+
+      // 高亮当前扇区
+      donutChartInstance.dispatchAction({
+        type: 'highlight',
+        seriesIndex: 0,
+        dataIndex: currentIndex
+      });
+
+      // 显示 tooltip
+      donutChartInstance.dispatchAction({
+        type: 'showTip',
+        seriesIndex: 0,
+        dataIndex: currentIndex
+      });
+    }, 3000); // 每3秒切换一次
+
+    return () => {
+      clearInterval(interval);
+      // 清除高亮状态
+      if (!donutChartInstance.isDisposed()) {
+        donutChartInstance.dispatchAction({
+          type: 'downplay',
+          seriesIndex: 0
+        });
+        donutChartInstance.dispatchAction({
+          type: 'hideTip'
+        });
+      }
+    };
+  }, [donutChartInstance]);
 
   // 注册 ECharts 世界地图（GeoJSON）
   useEffect(() => {
@@ -34,7 +82,7 @@ const LogisticsDashboard = () => {
     const register = async () => {
       try {
         // 运行期从 CDN 拉取 world GeoJSON（如果你希望离线/内网部署，可改为本地 assets json）
-        const res = await fetch('https://fastly.jsdelivr.net/npm/echarts@5/map/json/world.json');
+        const res = await fetch(getAssetUrl('/map/json/world.json'));
         if (!res.ok) return;
         const geoJson = await res.json();
         if (cancelled) return;
@@ -382,7 +430,7 @@ const LogisticsDashboard = () => {
   return (
     <div
       className={`logistics-dashboard ${isFullScreen ? 'fullscreen' : ''}`}
-      style={{ backgroundImage: `url("${getAssetUrl('logistics/map.png')}")`, backgroundPosition: '0 10px', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}
+      style={{ backgroundImage: `url("${getAssetUrl('logistics/map.png')}")`, backgroundPosition: 'center 26px', backgroundSize: '90%', backgroundRepeat: 'no-repeat' }}
     >
       <div className="fullscreen-toggle" onClick={toggleFullScreen} title="全屏">
         {isFullScreen ? (
@@ -392,13 +440,12 @@ const LogisticsDashboard = () => {
         )}
       </div>
 
-      <div className="back-toggle" onClick={goBack} title="返回">
-        ↩
+      <div className="back-toggle" onClick={goBack} title="切换">
+        <Icon fontSize={32} icon="material-symbols:switch-right" />
       </div>
 
       <Header
-        title="渝车出海 · 智能物流驾驶仓"
-        bgImage={getAssetUrl('logistics/header_bg.png')}
+        title="渝车出海 · 智能物流驾驶舱"
       />
 
       <div className="logistics-content">
@@ -470,7 +517,11 @@ const LogisticsDashboard = () => {
           </Panel>
           <Panel title="各路订单分布情况" className="panel-h-md logistics-title">
             <div className="chart-container">
-              <ReactECharts option={donutOption} style={{ height: '100%', width: '100%' }} />
+              <ReactECharts 
+                onChartReady={(instance) => setDonutChartInstance(instance)}
+                option={donutOption} 
+                style={{ height: '90%', width: '100%' }} 
+              />
             </div>
           </Panel>
         </div>

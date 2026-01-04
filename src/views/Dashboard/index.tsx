@@ -10,11 +10,12 @@ import { getAssetUrl } from '../../utils/index';
 import type { Car } from '../../types';
 import { Icon } from '@iconify/react';
 import './style.scss';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [isBooting, setIsBooting] = useState(true);
   const toastRef = useRef<ToastRef>(null);
+  const navigate = useNavigate();
 
   // Use custom hook for data
   const { droneStats, dogStats, patrolStats, metrics, zones } = useDashboardData();
@@ -31,11 +32,6 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    // Boot sequence
-    const bootTimer = setTimeout(() => {
-      setIsBooting(false);
-    }, 2000);
-
     const handleFullScreenChange = () => {
       setIsFullScreen(!!document.fullscreenElement);
     };
@@ -43,7 +39,6 @@ const Dashboard = () => {
 
     return () => {
       document.removeEventListener('fullscreenchange', handleFullScreenChange);
-      clearTimeout(bootTimer);
     };
   }, []);
 
@@ -134,15 +129,6 @@ const Dashboard = () => {
   return (
     <div className={`dashboard-container ${isFullScreen ? 'fullscreen' : ''}`} style={{ backgroundImage: `url("${getAssetUrl('img (29).png')}")` }}>
       <Toast ref={toastRef} />
-      {isBooting && (
-        <div className="boot-screen">
-          <div className="boot-content">
-            <div className="spinner-tech"></div>
-            <div className="boot-text">SYSTEM INITIALIZING...</div>
-            <div className="boot-progress"></div>
-          </div>
-        </div>
-      )}
 
       {selectedCar && (
         <div className="modal-backdrop" onClick={closeCarModal}>
@@ -187,6 +173,11 @@ const Dashboard = () => {
           <Icon fontSize={32} icon="mdi:fullscreen" />
         )}
       </div>
+
+      <div className="back-toggle" onClick={() => navigate('/logistics')} title="切换">
+        <Icon fontSize={32} icon="material-symbols:switch-left" />
+      </div>
+
       <Header />
       <div className="dashboard-content">
         {/* Left Column */}
@@ -354,7 +345,7 @@ const Dashboard = () => {
                     <div className={`device-state ${i === 3 ? 'charging' : 'patrolling'}`}>
                       {i === 3 ? '充电中' : '巡检中'}
                     </div>
-                    <img src={i===3 ? getAssetUrl('drone_charging.png') : getAssetUrl('drone_patrolling.png')} className="device-icon-img" alt="drone" />
+                    <img src={i === 3 ? getAssetUrl('drone_charging.png') : getAssetUrl('drone_patrolling.png')} className="device-icon-img" alt="drone" />
                   </div>
                 ))}
               </div>
@@ -367,7 +358,7 @@ const Dashboard = () => {
                     <div className={`device-state ${i === 3 ? 'charging' : 'patrolling'}`}>
                       {i === 3 ? '充电中' : '巡检中'}
                     </div>
-                    <img src={i===3 ? getAssetUrl('dog_charging.png') : getAssetUrl('dog_patrolling.png')} className="device-icon-img" alt="robot dog" />
+                    <img src={i === 3 ? getAssetUrl('dog_charging.png') : getAssetUrl('dog_patrolling.png')} className="device-icon-img" alt="robot dog" />
                   </div>
                 ))}
               </div>
@@ -451,7 +442,7 @@ const Dashboard = () => {
               </div>
             </div>
             <div style={{ marginTop: '10px', textAlign: 'center' }}>
-              <button 
+              <button
                 onClick={goToLogistics}
                 style={{
                   background: 'rgba(0, 246, 255, 0.1)',

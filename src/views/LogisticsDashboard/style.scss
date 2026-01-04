@@ -67,9 +67,10 @@
     border-radius: 8px;
     cursor: pointer;
     user-select: none;
-    opacity: 0.75;
+    opacity: 0.5;
     color: #00f6ff;
     font-size: 20px;
+    transition: opacity 0.3s;
 
     &:hover {
       opacity: 1;
@@ -590,26 +591,73 @@
   }
 
   .bottom-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    height: 44px;
+    display: flex;
+    gap: 14px;
+    height: 40px;
+    position: relative;
+    z-index: 2;
   }
 
   .big-btn {
-    border: 1px solid rgba(0, 246, 255, 0.18);
-    background: linear-gradient(90deg, rgba(2, 107, 255, 0.55) 0%, rgba(4, 106, 177, 0.55) 100%);
-    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    border: 1px solid rgba(0, 246, 255, 0.25);
+    outline: none;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
     color: #eafcff;
-    font-weight: 800;
-    letter-spacing: 2px;
     cursor: pointer;
+    border-radius: 8px;
+    transition: transform 0.15s ease, filter 0.2s ease, box-shadow 0.2s ease;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(4px);
+    background: linear-gradient(90deg, rgba(2, 107, 255, 0.7) 0%, rgba(4, 106, 177, 0.7) 100%);
+    border-color: rgba(2, 107, 255, 0.45);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 0 18px rgba(2, 107, 255, 0.22);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.02) 45%, rgba(0, 0, 0, 0.12) 100%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -30%;
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+      transform: skewX(-20deg);
+      opacity: 0;
+      transition: left 0.6s ease, opacity 0.25s ease;
+      pointer-events: none;
+    }
 
     &:hover {
       filter: brightness(1.08);
-      box-shadow: 0 0 18px rgba(2, 107, 255, 0.22);
+      box-shadow: 0 0 16px rgba(0, 246, 255, 0.18);
+    }
+
+    &:hover::after {
+      left: 120%;
+      opacity: 1;
+    }
+
+    &:active {
+      transform: translateY(1px);
+      filter: brightness(1.02);
     }
 
     &.active {
@@ -617,13 +665,17 @@
     }
 
     .badge {
-      margin-left: 8px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      border-radius: 50%;
       background: #ff3b2f;
-      color: #fff;
-      border-radius: 999px;
-      padding: 2px 8px;
+      margin-left: 5px;
       font-size: 12px;
-      font-weight: 900;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(255, 59, 47, 0.35);
+      text-align: center;
+      display: inline-block;
     }
   }
 

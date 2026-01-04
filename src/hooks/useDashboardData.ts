@@ -111,6 +111,56 @@ const useDashboardData = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // 模拟任务进度缓慢增加
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setData(prev => {
+        const { droneStats, dogStats } = prev;
+        
+        let nextDroneStats = droneStats;
+        let nextDogStats = dogStats;
+
+        // 无人机任务进度模拟
+        if (droneStats.completed < droneStats.total) {
+          const newCompleted = Math.min(droneStats.total, droneStats.completed + 1);
+          const newUncompleted = droneStats.total - newCompleted;
+          const newRate = Math.round((newCompleted / droneStats.total) * 100);
+          
+          nextDroneStats = {
+            ...droneStats,
+            completed: newCompleted,
+            uncompleted: newUncompleted,
+            completionRate: newRate
+          };
+        }
+
+        // 机器狗任务进度模拟
+        if (dogStats.completed < dogStats.total) {
+          const newCompleted = Math.min(dogStats.total, dogStats.completed + 1);
+          const newUncompleted = dogStats.total - newCompleted;
+          
+          nextDogStats = {
+            ...dogStats,
+            completed: newCompleted,
+            uncompleted: newUncompleted
+          };
+        }
+
+        if (nextDroneStats === droneStats && nextDogStats === dogStats) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          droneStats: nextDroneStats,
+          dogStats: nextDogStats
+        };  
+      });
+    }, 5000); // 每5秒增加一次
+
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -118,7 +168,12 @@ const useDashboardData = () => {
       try {
         const newData = await fetchDashboardData();
         if (isMounted) {
-          setData(newData);
+          setData(prev => ({
+            ...newData,
+            // Keep local simulation progress if it's ahead of the fetched data (since fetched data is static mock)
+            droneStats: prev.droneStats.completed > newData.droneStats.completed ? prev.droneStats : newData.droneStats,
+            dogStats: prev.dogStats.completed > newData.dogStats.completed ? prev.dogStats : newData.dogStats
+          }));
           setLoading(false);
         }
       } catch (err) {
