@@ -217,7 +217,7 @@ const LogisticsDashboard = () => {
           data: lineData,
         },
         {
-          name: '节点',
+          name: '城市',
           type: 'effectScatter',
           coordinateSystem: 'geo',
           zlevel: 3,
