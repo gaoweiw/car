@@ -2,6 +2,7 @@
 // The path is relative to this file (src/utils/index.ts -> src/assets/images)
 // 支持子目录（如 assets/images/logistics/*）
 const images = import.meta.glob('../assets/images/**/*.png', { eager: true, import: 'default' });
+const mapJsons = import.meta.glob('../assets/map/json/*.json', { eager: true, as: 'url' });
 
 /**
  * Get the URL for an image asset by filename
@@ -11,5 +12,10 @@ const images = import.meta.glob('../assets/images/**/*.png', { eager: true, impo
 export const getAssetUrl = (filename: string) => {
   const path = `../assets/images/${filename}`;
   return (images[path] as string) || '';
+};
+
+export const getJsonUrl = (filename: string) => {
+  const path = `../assets/map/json/${filename}`;
+  return (mapJsons[path] as string) || '';
 };
 

@@ -3,9 +3,10 @@ import ReactECharts from 'echarts-for-react';
 import * as echarts from 'echarts';
 import Header from '../../components/Header';
 import Panel from '../../components/Panel';
-import { getAssetUrl } from '../../utils';
+import { getAssetUrl, getJsonUrl } from '../../utils';
 import './style.scss';
 import { Icon } from '@iconify/react';
+import { useNavigate } from 'react-router-dom';
 
 type OrderRow = {
   id: string;
@@ -27,15 +28,19 @@ const LogisticsDashboard = () => {
   const [isHoveringTable, setIsHoveringTable] = useState(false);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [donutChartInstance, setDonutChartInstance] = useState<echarts.ECharts | null>(null);
-
+  const navigate = useNavigate();
   // 模拟鼠标依次滑过饼图各部分
   useEffect(() => {
     if (!donutChartInstance) return;
 
     let currentIndex = -1;
-    const dataLen = 4; // 饼图数据长度
 
     const interval = setInterval(() => {
+      const option = donutChartInstance.getOption() as echarts.EChartsOption;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const series = option?.series as any[];
+      const dataLen = series?.[0]?.data?.length || 4;
+
       // 取消之前的高亮
       donutChartInstance.dispatchAction({
         type: 'downplay',
@@ -82,7 +87,7 @@ const LogisticsDashboard = () => {
     const register = async () => {
       try {
         // 运行期从 CDN 拉取 world GeoJSON（如果你希望离线/内网部署，可改为本地 assets json）
-        const res = await fetch(getAssetUrl('/map/json/world.json'));
+        const res = await fetch(getJsonUrl('world.json'));
         if (!res.ok) return;
         const geoJson = await res.json();
         if (cancelled) return;
@@ -226,7 +231,7 @@ const LogisticsDashboard = () => {
           data: scatterData,
         },
       ],
-    };
+    } as echarts.EChartsOption;
   }, [mapCenter]);
 
   const orders = useMemo<OrderRow[]>(
@@ -289,14 +294,14 @@ const LogisticsDashboard = () => {
         },
         label: { show: false },
         data: [
-          { value: 35, name: '赛力斯', itemStyle: { color: '#00f6ff' } },
+          { value: 35, name: '俄罗斯', itemStyle: { color: '#00f6ff' } },
           { value: 25, name: '老挝', itemStyle: { color: '#026bff' } },
           { value: 25, name: '泰国', itemStyle: { color: '#ffd36a' } },
           { value: 15, name: '越南', itemStyle: { color: '#00ffaa' } },
         ],
       },
     ],
-  }), []);
+  } as echarts.EChartsOption), []);
 
   const lineOption = useMemo(() => ({
     backgroundColor: 'transparent',
@@ -383,7 +388,7 @@ const LogisticsDashboard = () => {
         data: [150, 232, 201, 154, 190, 330, 410, 332, 301, 334, 390, 420],
       },
     ],
-  }), []);
+  } as echarts.EChartsOption), []);
 
   useEffect(() => {
     const handleFullScreenChange = () => setIsFullScreen(!!document.fullscreenElement);
@@ -398,11 +403,6 @@ const LogisticsDashboard = () => {
       document.exitFullscreen?.();
     }
   };
-
-  const goBack = () => {
-    window.location.href = '/';
-  };
-
   // Auto-scroll table
   useEffect(() => {
     const el = tableRef.current;
@@ -440,7 +440,7 @@ const LogisticsDashboard = () => {
         )}
       </div>
 
-      <div className="back-toggle" onClick={goBack} title="切换">
+      <div className="back-toggle" onClick={() => navigate('/')} title="切换">
         <Icon fontSize={32} icon="material-symbols:switch-right" />
       </div>
 
@@ -517,10 +517,10 @@ const LogisticsDashboard = () => {
           </Panel>
           <Panel title="各路订单分布情况" className="panel-h-md logistics-title">
             <div className="chart-container">
-              <ReactECharts 
+              <ReactECharts
                 onChartReady={(instance) => setDonutChartInstance(instance)}
-                option={donutOption} 
-                style={{ height: '90%', width: '100%' }} 
+                option={donutOption}
+                style={{ height: '90%', width: '100%' }}
               />
             </div>
           </Panel>

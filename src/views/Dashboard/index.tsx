@@ -71,11 +71,6 @@ const Dashboard = () => {
     }
   };
 
-  // Add navigation to logistics dashboard
-  const goToLogistics = () => {
-    window.location.href = '/logistics';
-  };
-
   // const getBarOption = () => ({
   //   grid: { top: 20, bottom: 20, left: 40, right: 20 },
   //   tooltip: { trigger: 'axis' },
@@ -440,21 +435,6 @@ const Dashboard = () => {
                   <div className="detail-text">已检查完毕</div>
                 </div>
               </div>
-            </div>
-            <div style={{ marginTop: '10px', textAlign: 'center' }}>
-              <button
-                onClick={goToLogistics}
-                style={{
-                  background: 'rgba(0, 246, 255, 0.1)',
-                  border: '1px solid rgba(0, 246, 255, 0.3)',
-                  color: '#00f6ff',
-                  padding: '4px 12px',
-                  cursor: 'pointer',
-                  fontSize: '12px'
-                }}
-              >
-                查看国际物流态势 &gt;
-              </button>
             </div>
           </Panel>
         </div>

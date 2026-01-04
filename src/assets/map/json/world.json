@@ -1,13 +1,4 @@
-{
-  "type": "FeatureCollection",
-  "name": "world-simplified",
-  "crs": {
-    "type": "name",
-    "properties": {
-      "name": "urn:ogc:def:crs:EPSG::3857"
-    }
-  },
-  "features": [
+ [
     {
       "type": "Feature",
       "id": "CHN",
@@ -152,4 +143,3 @@
       }
     }
   ]
-}

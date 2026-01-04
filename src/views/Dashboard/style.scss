@@ -7,7 +7,7 @@
   padding: 0 20px 20px 20px;
   box-sizing: border-box;
   color: #fff;
-  animation: fade-in 1s ease-out;
+  // animation: fade-in 1s ease-out;
   position: relative;
   // background-image: url('../../assets/images/img (29).png'); // Moved to inline style
   background-size: cover;
@@ -196,6 +196,7 @@
     color: #00f6ff;
     opacity: 0.5;
     transition: opacity 0.3s;
+    animation: fadeInToggle 1s ease-out 0.5s backwards;
 
     &:hover {
       opacity: 1;
@@ -219,6 +220,7 @@
     color: #00f6ff;
     font-size: 20px;
     transition: opacity 0.3s;
+    animation: fadeInToggle 1s ease-out 0.5s backwards;
 
     &:hover {
       opacity: 1;
@@ -240,9 +242,43 @@
     gap: 15px;
     height: 100%; // Ensure column takes full height
     min-height: 0; // Allow shrinking
+    // animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; // Removed column-level animation
   }
 
-  .left-col,
+  // Staggered animation for children panels
+  .column > * {
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  }
+
+  .left-col > * {
+    @for $i from 1 through 4 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{0.1 + $i * 0.1}s;
+      }
+    }
+  }
+
+  .center-col > * {
+    @for $i from 1 through 4 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{0.2 + $i * 0.1}s;
+      }
+    }
+  }
+
+  .right-col > * {
+    @for $i from 1 through 4 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{0.3 + $i * 0.1}s;
+      }
+    }
+  }
+
+  .left-col {
+    width: 25%;
+    min-width: 350px;
+  }
+
   .right-col {
     width: 25%;
     min-width: 350px;
@@ -1433,6 +1469,28 @@
     100% {
       left: 100%;
       opacity: 0;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInToggle {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 0.5;
+      transform: translateX(0);
     }
   }
 }

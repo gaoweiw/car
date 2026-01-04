@@ -10,6 +10,7 @@
   align-items: center;
   position: relative;
   margin-bottom: 10px;
+  animation: slideDown 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
 
   .header-title {
     font-size: 32px;
@@ -68,5 +69,16 @@
     height: 2px;
     background: linear-gradient(90deg, transparent 0%, #00f6ff 50%, transparent 100%);
     box-shadow: 0 0 10px #00f6ff;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
